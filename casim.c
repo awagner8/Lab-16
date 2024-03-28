@@ -10,8 +10,11 @@ unsigned long get_tag (unsigned long addr, unsigned long num_sets, unsigned shor
     // Recall that a tag is the high order bits of the address, left of the
     // index and block offset bits
     // Hint: a helpful function is log2(x) that returns log base 2 of x
-
-    return 0;
+    unsigned long index_bits = log2(num_sets);
+    unsigned long offset_bits = log2(bsize);
+    unsigned long tag = addr >> (index_bits + offset_bits);
+    return tag;
+    
 
 
 }
@@ -22,8 +25,11 @@ unsigned long get_index (unsigned long addr, unsigned long num_sets, unsigned sh
     // TODO: fill in this function to return the index given the address, number
     // of sets and blocksize
     // Hint: a helpful function is log2(x) that returns log base 2 of x
-    
-    return 0;
+    unsigned long index_bits = log2(num_sets);
+    unsigned long index = addr >> (unsigned long)log2(bsize);
+    index = index & ((1 << index_bits) - 1);
+    return index;
+
 
 }
 
@@ -62,10 +68,18 @@ int main(int argc, char **argv) {
         // TODO: fill in code here to implement a simple direct mapped cache,
         // incrementing the hits variable on a hit and incrementing the misses 
         // variable on a miss
+        if (cache[index] == tag) {
+            hits++;
+        } else {
+            cache[index] = tag;
+            misses++;
+        }
+
 
         // a useful debug print if you want to use it, but comment it out for
         // your submission!
-        // printf("address: 0x%lx, tag 0x%lx, index 0x%x\n",address, tag, index);
+        //printf("address: 0x%lx, tag 0x%lx, index 0x%x\n",address, tag, index);
+
     
     }
     printf("Hits: %d\n",hits);
